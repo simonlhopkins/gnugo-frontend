@@ -25,7 +25,7 @@ a:hover {
 html,
 body,
 #root {
-  max-width: 100%;
+  width: 100%;
 }
 body {
   margin: 0;

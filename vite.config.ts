@@ -11,6 +11,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       devOptions: {
         enabled: true,
+        type: "module",
+        navigateFallback: "index.html",
       },
       includeAssets: ["favicon.ico", "sounds/*.mp3", "*.jpg"],
       manifest: {

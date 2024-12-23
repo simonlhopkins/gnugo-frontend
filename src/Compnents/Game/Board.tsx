@@ -7,12 +7,12 @@ import GNUGoClient from "./GNUGoClient";
 import GoSquare from "./GoSquare";
 
 const Board = () => {
-  const { addStone, undo, resetBoard, pass, gameState, currentError } =
+  const { addStone, undo, resetBoard, pass, gamemodel, currentError } =
     useGameContext();
-  if (gameState == null) {
-    return <p>gamestate is null</p>;
+  if (gamemodel == null) {
+    return <p>gamemodel is null</p>;
   }
-  const size = gameState.size;
+  const size = gamemodel.size;
 
   const [mouseOverSquare, setMouseOverSquare] = useState<{
     row: number;
@@ -20,21 +20,21 @@ const Board = () => {
   } | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const getSymbol = (gameState: GameModel, row: number, col: number) => {
+  const getSymbol = (gameModel: GameModel, row: number, col: number) => {
     //top
-    const boardArr = gameState.position.schema;
+    const boardArr = gameModel.position.schema;
     if (boardArr[row * size + col] == 1) {
       return <div className="piece">⚫</div>;
     } else if (boardArr[row * size + col] == -1) {
       return <div className="piece">⚪</div>;
     }
   };
-  const getValueAtSquare = (gameState: GameModel, row: number, col: number) => {
-    return gameState.position.schema[row * size + col];
+  const getValueAtSquare = (gameModel: GameModel, row: number, col: number) => {
+    return gameModel.position.schema[row * size + col];
   };
-  const getSquares = (gameState: GameModel) => {
+  const getSquares = (gameModel: GameModel) => {
     const squares = [];
-    const mostRecentPlace = GameManager.getMostRecentMove(gameState);
+    const mostRecentPlace = GameManager.getMostRecentMove(gameModel);
 
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
@@ -42,10 +42,10 @@ const Board = () => {
         const col = j;
         const isMostReventPlace = mostRecentPlace
           ? mostRecentPlace.index ==
-            GameManager.indexFromRowCol(row, col, gameState.size)
+            GameManager.indexFromRowCol(row, col, gameModel.size)
           : false;
         const showShadowPiece = mouseOverSquare
-          ? getValueAtSquare(gameState, row, col) == 0 &&
+          ? getValueAtSquare(gameModel, row, col) == 0 &&
             mouseOverSquare.row == row &&
             mouseOverSquare.col == col
           : false;
@@ -65,10 +65,10 @@ const Board = () => {
             }}
             mostRecentPlace={isMostReventPlace}
           >
-            {getSymbol(gameState, i, j)}
+            {getSymbol(gameModel, i, j)}
             {showShadowPiece && (
               <div className={clsx("piece", "ghost")}>
-                {gameState.turn == -1 ? "⚪" : "⚫"}
+                {gameModel.turn == -1 ? "⚪" : "⚫"}
               </div>
             )}
           </GoSquare>
@@ -94,7 +94,7 @@ const Board = () => {
   };
 
   return (
-    <div>
+    <StyledWrapper>
       <button
         onClick={() => {
           resetBoard();
@@ -120,7 +120,7 @@ const Board = () => {
         disabled={loading}
         onClick={() => {
           setLoading(true);
-          GNUGoClient.getBestPosition(gameState)
+          GNUGoClient.getBestPosition(gamemodel)
             .then((res) => {
               if (res == "PASS") {
                 pass();
@@ -141,17 +141,11 @@ const Board = () => {
       <button
         onClick={() => {
           setLoading(true);
-          GNUGoClient.getStatus(gameState)
+          GNUGoClient.getStatus(gamemodel)
             .then((res) => {
               console.log(res);
-              console.log(gameState.position.capCount);
-              const { white, black, komi } = res;
-              const whiteScore =
-                white.length +
-                gameState.position.capCount.white +
-                parseFloat(komi);
-              const blackScore =
-                black.length + gameState.position.capCount.black;
+              console.log(gamemodel.position.capCount);
+              const { whiteScore, blackScore, komi } = res;
               console.log("white score: " + whiteScore);
               console.log("black score: " + blackScore);
               console.log("komi: " + komi);
@@ -165,24 +159,35 @@ const Board = () => {
         get status
       </button>
       <p>{currentError ? getErrorText(currentError) : "no error"}</p>
-      <p>{gameState.turn == 1 ? "black" : "white"}'s turn</p>
+      <p>{gamemodel.turn == 1 ? "black" : "white"}'s turn</p>
+      <p>{JSON.stringify(gamemodel.position.capCount)}</p>
       <StyledBoard
         $size={size}
         onMouseLeave={() => {
           setMouseOverSquare(null);
         }}
       >
-        {getSquares(gameState)}
+        {getSquares(gamemodel)}
       </StyledBoard>
-    </div>
+    </StyledWrapper>
   );
 };
 interface StyledBoardProps {
   $size: number;
 }
+const StyledWrapper = styled.div`
+  height: 100vh;
+  width: 100%;
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
 const StyledBoard = styled.div<StyledBoardProps>`
   display: grid;
-  width: 900px;
+  flex: 1;
+  justify-content: center;
+  /* width: 900px; */
   max-width: 100%;
   background-image: url("/Prisoner.jpg");
   aspect-ratio: 1;

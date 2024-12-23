@@ -8,9 +8,10 @@ import {
 } from "react";
 import GameManager, { GameModel } from "./GameManager";
 import useLocalStorage from "use-local-storage";
+import GNUGoClient from "./GNUGoClient";
 
 interface GameContextType {
-  gameState: GameModel | null;
+  gamemodel: GameModel | null;
   currentError: number | null;
   addStone(x: number, y: number, color?: -1 | 1): void;
   undo(): void;
@@ -34,7 +35,7 @@ const size = 9;
 export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   children,
 }) => {
-  const [gameState, setGameState] = useLocalStorage<GameModel | null>(
+  const [gamemodel, setGameModel] = useLocalStorage<GameModel | null>(
     "gamestate",
     null
   );
@@ -42,20 +43,20 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   //   const gameRef = useRef<WGo.Game | null>(null);
   const gameManager = useMemo(() => new GameManager(size), []);
   useEffect(() => {
-    if (gameState) {
-      gameManager.loadModel(gameState);
+    if (gamemodel) {
+      gameManager.loadModel(gamemodel);
     }
-    setGameState(gameManager.getModel());
+    setGameModel(gameManager.getModel());
   }, []);
   useEffect(() => {
     // Handler for when the tab/window gains focus
     const handleFocus = () => {
       console.log("Tab is focused");
       //if you have multiple tabs open, the gamestate, which is just a local storage object, may have been modified, so the internal state of Gamemanager is now out of sync, luckily gamemanager can pick right back up when we load the model
-      if (gameState) {
-        gameManager.loadModel(gameState);
+      if (gamemodel) {
+        gameManager.loadModel(gamemodel);
       }
-      setGameState(gameManager.getModel());
+      setGameModel(gameManager.getModel());
     };
 
     // Add event listeners to the window object
@@ -65,7 +66,7 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
     return () => {
       window.removeEventListener("focus", handleFocus);
     };
-  }, [gameState]);
+  }, [gamemodel]);
 
   const addStone = async (x: number, y: number) => {
     const play = gameManager.play(x, y);
@@ -74,29 +75,38 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
       return;
     }
     setCurrentError(null);
-    setGameState(gameManager.getModel());
+    setGameModel(gameManager.getModel());
   };
   const undo = () => {
     console.log("undo");
     gameManager.popPosition();
-    setGameState(gameManager.getModel());
+    setGameModel(gameManager.getModel());
   };
 
   const resetBoard = () => {
     console.log("reset");
     gameManager.resetBoard();
-    setGameState(gameManager.getModel());
+    setGameModel(gameManager.getModel());
   };
 
   const pass = () => {
-    gameManager.pass();
-    setGameState(gameManager.getModel());
+    if (gamemodel && GameManager.isGameOver(gamemodel)) {
+      GNUGoClient.getStatus(gamemodel).then((res) => {
+        let message = `white score ${res.whiteScore}`;
+        message += `\nblack score ${res.blackScore}`;
+        message += `\nkomi: ${res.komi}`;
+        alert(message);
+      });
+    } else {
+      gameManager.pass();
+      setGameModel(gameManager.getModel());
+    }
   };
 
   return (
     <GameContext.Provider
       value={{
-        gameState,
+        gamemodel,
         currentError,
         addStone,
         undo,

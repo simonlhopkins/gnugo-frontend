@@ -1,4 +1,4 @@
-import GNUGoClient from "./GNUGoClient";
+import { Howl } from "howler";
 //even tho it is duplicate state to have this playing on client and on the AI, it is good since with no AI, you can play without the server, plus it holds onto things like stones captured and such
 //ok actually I don't think it is good maybe, like I should just be pushing positions and updating capture counts based on wjatever the server returns as the updated game state, then we can just cache the most recent positions
 //I should make an interface for a go engine so I can swap it out if I wanted to
@@ -9,8 +9,11 @@ class GameManager {
   private size: number;
 
   //audio
-  doubleKillSound = new Audio("/sounds/doubleKill.mp3");
-  vineboomSound = new Audio("/sounds/vine-boom.mp3");
+  doubleKillSound = new Howl({ src: "/sounds/doubleKill.mp3" });
+  tripleKillSound = new Howl({ src: "/sounds/tripleKill.mp3" });
+  killingSpreeSound = new Howl({ src: "/sounds/killing-spree.mp3" });
+  killtacularSound = new Howl({ src: "/sounds/killtactular.mp3" });
+  vineboomSound = new Howl({ src: "/sounds/vine-boom.mp3" });
   constructor(size: number) {
     this.size = size;
     this.gameInstance = new WGo.Game(size);
@@ -86,19 +89,59 @@ class GameManager {
       .filter((item) => item != false);
     return validMoves;
   }
+  private playSoundAfterCapture(
+    stonesCaptured: {
+      x: number;
+      y: number;
+    }[],
+    killStreak: number
+  ) {
+    if (killStreak > 1) {
+      if (killStreak == 2) {
+        this.killingSpreeSound.play();
+      } else {
+        this.killtacularSound.play();
+      }
+      return;
+    }
+    if (stonesCaptured.length == 1) {
+      this.vineboomSound.play();
+    } else if (stonesCaptured.length == 2) {
+      this.doubleKillSound.play();
+    } else if (stonesCaptured.length == 3) {
+      this.tripleKillSound.play();
+    } else {
+      this.killtacularSound.play();
+    }
+  }
 
-  play(row: number, col: number) {
-    const result = this.gameInstance.play(row, col);
-    if (Array.isArray(result)) {
-      //is an array;
-      const stonesCaptured = result as number[];
-      if (stonesCaptured.length == 1) {
-        this.vineboomSound.play();
-      } else if (stonesCaptured.length == 2) {
-        this.doubleKillSound.play();
+  private static GetKillStreak(gameModel: GameModel, color: WGo.B | WGo.W) {
+    const lastCaptures = gameModel.stack
+      .filter((pos) => pos.color == color)
+      .map((pos) => pos.capCount[color == 1 ? "black" : "white"])
+      .reverse();
+    let killStreak = 0;
+    for (let i = 1; i < lastCaptures.length; i++) {
+      if (lastCaptures[i - 1] > lastCaptures[i]) {
+        killStreak++;
+      } else {
+        break;
       }
     }
-    console.log("playing move");
+    return killStreak;
+  }
+
+  play(row: number, col: number) {
+    const turn = this.getModel().turn;
+    const result = this.gameInstance.play(row, col);
+    if (Array.isArray(result)) {
+      if (result.length > 0) {
+        this.playSoundAfterCapture(
+          result,
+          GameManager.GetKillStreak(this.getModel(), turn)
+        );
+      }
+    }
     return result;
   }
   getPosition() {
@@ -113,19 +156,18 @@ class GameManager {
       this.gameInstance.popPosition();
     }
   }
-  pass() {
-    const lastTwoPositions = this.gameInstance.stack.slice(
-      -Math.min(this.gameInstance.stack.length, 2)
+  static isGameOver(gameModel: GameModel) {
+    const lastTwoPositions = gameModel.stack.slice(
+      -Math.min(gameModel.stack.length, 2)
     );
     const gameOver =
       lastTwoPositions.length == 2 &&
       GameManager.getDifferences(lastTwoPositions[0], lastTwoPositions[1])
         .length == 0;
-    if (!gameOver) {
-      this.gameInstance.pass();
-    } else {
-      console.log("game over!");
-    }
+    return gameOver;
+  }
+  pass() {
+    this.gameInstance.pass();
   }
   resetBoard() {
     this.gameInstance.firstPosition();

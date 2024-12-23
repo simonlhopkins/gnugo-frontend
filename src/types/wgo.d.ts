@@ -35,6 +35,6 @@ declare namespace WGo {
       y: number,
       color?: W | B,
       noPlay?: boolean
-    ): number[] | number;
+    ): { x: number; y: number }[] | number;
   }
 }

@@ -104,10 +104,19 @@ class GNUGoClient {
       moveList,
     });
     console.log(response);
-    return response.data as {
-      komi: string;
-      white: string[];
-      black: string[];
+    const { white, black, komi } = response.data;
+    const whiteScore = (white.length +
+      gameModel.position.capCount.white +
+      parseFloat(komi)) as number;
+    const blackScore = (black.length +
+      gameModel.position.capCount.black) as number;
+    console.log("white score: " + whiteScore);
+    console.log("black score: " + blackScore);
+    console.log("komi: " + komi);
+    return {
+      whiteScore,
+      blackScore,
+      komi: komi as number,
     };
   }
 
