@@ -6,19 +6,18 @@ import clsx from "clsx";
 import GNUGoClient from "./GNUGoClient";
 import GoSquare from "./GoSquare";
 
-const Board = () => {
-  const { addStone, undo, resetBoard, pass, gamemodel, currentError } =
-    useGameContext();
-  if (gamemodel == null) {
-    return <p>gamemodel is null</p>;
-  }
-  const size = gamemodel.size;
+interface Props {
+  gameModel: GameModel;
+  disabled: boolean;
+  onSquareClick(row: number, col: number): void;
+}
+const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
+  const size = gameModel.size;
 
   const [mouseOverSquare, setMouseOverSquare] = useState<{
     row: number;
     col: number;
   } | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const getSymbol = (gameModel: GameModel, row: number, col: number) => {
     //top
@@ -56,9 +55,9 @@ const Board = () => {
             col={col}
             size={size}
             showShadowPiece={showShadowPiece}
-            disabled={loading}
+            disabled={disabled}
             onClick={function (): void {
-              addStone(row, col);
+              onSquareClick(row, col);
             }}
             onMouseOver={() => {
               setMouseOverSquare({ row, col });
@@ -78,118 +77,29 @@ const Board = () => {
     return squares;
   };
 
-  const getErrorText = (errorNum: number) => {
-    switch (errorNum) {
-      case 1:
-        return "given coordinates are not on board.";
-      case 2:
-        return "on given coordinates already is a stone.";
-      case 3:
-        return "suicide (currently they are forbbiden).";
-      case 4:
-        return "repeated position.";
-      default:
-        return `unrecognized error: ${currentError}`;
-    }
-  };
-
   return (
-    <StyledWrapper>
-      <button
-        onClick={() => {
-          resetBoard();
-        }}
-      >
-        reset board
-      </button>
-      <button
-        onClick={() => {
-          pass();
-        }}
-      >
-        pass
-      </button>
-      <button
-        onClick={() => {
-          undo();
-        }}
-      >
-        undo
-      </button>
-      <button
-        disabled={loading}
-        onClick={() => {
-          setLoading(true);
-          GNUGoClient.getBestPosition(gamemodel)
-            .then((res) => {
-              if (res == "PASS") {
-                pass();
-              } else if (res == "resign") {
-                console.log("resign");
-              } else {
-                const rowCol = GNUGoClient.letterNumberToRowCol(res, size);
-                addStone(rowCol.row, rowCol.col);
-              }
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        }}
-      >
-        play AI move
-      </button>
-      <button
-        onClick={() => {
-          setLoading(true);
-          GNUGoClient.getStatus(gamemodel)
-            .then((res) => {
-              console.log(res);
-              console.log(gamemodel.position.capCount);
-              const { whiteScore, blackScore, komi } = res;
-              console.log("white score: " + whiteScore);
-              console.log("black score: " + blackScore);
-              console.log("komi: " + komi);
-              setLoading(false);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        }}
-      >
-        get status
-      </button>
-      <p>{currentError ? getErrorText(currentError) : "no error"}</p>
-      <p>{gamemodel.turn == 1 ? "black" : "white"}'s turn</p>
-      <p>{JSON.stringify(gamemodel.position.capCount)}</p>
-      <StyledBoard
-        $size={size}
-        onMouseLeave={() => {
-          setMouseOverSquare(null);
-        }}
-      >
-        {getSquares(gamemodel)}
-      </StyledBoard>
-    </StyledWrapper>
+    <StyledBoard
+      $size={size}
+      onMouseLeave={() => {
+        setMouseOverSquare(null);
+      }}
+    >
+      {getSquares(gameModel)}
+    </StyledBoard>
   );
 };
 interface StyledBoardProps {
   $size: number;
 }
-const StyledWrapper = styled.div`
-  height: 100vh;
-  width: 100%;
-  overflow-y: hidden;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
+
 const StyledBoard = styled.div<StyledBoardProps>`
   display: grid;
   flex: 1;
   justify-content: center;
   /* width: 900px; */
   max-width: 100%;
-  background-image: url("/Prisoner.jpg");
+  background-image: url("/Blood_gulch.jpg");
+  background-size: contain;
   aspect-ratio: 1;
   grid-template-rows: repeat(${(props) => props.$size}, 1fr);
   grid-template-columns: repeat(${(props) => props.$size}, 1fr);

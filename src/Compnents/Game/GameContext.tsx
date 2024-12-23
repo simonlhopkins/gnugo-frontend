@@ -11,7 +11,7 @@ import useLocalStorage from "use-local-storage";
 import GNUGoClient from "./GNUGoClient";
 
 interface GameContextType {
-  gamemodel: GameModel | null;
+  gameModel: GameModel | null;
   currentError: number | null;
   addStone(x: number, y: number, color?: -1 | 1): void;
   undo(): void;
@@ -35,7 +35,7 @@ const size = 9;
 export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   children,
 }) => {
-  const [gamemodel, setGameModel] = useLocalStorage<GameModel | null>(
+  const [gameModel, setGameModel] = useLocalStorage<GameModel | null>(
     "gamestate",
     null
   );
@@ -43,8 +43,8 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   //   const gameRef = useRef<WGo.Game | null>(null);
   const gameManager = useMemo(() => new GameManager(size), []);
   useEffect(() => {
-    if (gamemodel) {
-      gameManager.loadModel(gamemodel);
+    if (gameModel) {
+      gameManager.loadModel(gameModel);
     }
     setGameModel(gameManager.getModel());
   }, []);
@@ -53,8 +53,8 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
     const handleFocus = () => {
       console.log("Tab is focused");
       //if you have multiple tabs open, the gamestate, which is just a local storage object, may have been modified, so the internal state of Gamemanager is now out of sync, luckily gamemanager can pick right back up when we load the model
-      if (gamemodel) {
-        gameManager.loadModel(gamemodel);
+      if (gameModel) {
+        gameManager.loadModel(gameModel);
       }
       setGameModel(gameManager.getModel());
     };
@@ -66,7 +66,7 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
     return () => {
       window.removeEventListener("focus", handleFocus);
     };
-  }, [gamemodel]);
+  }, [gameModel]);
 
   const addStone = async (x: number, y: number) => {
     const play = gameManager.play(x, y);
@@ -90,8 +90,8 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   };
 
   const pass = () => {
-    if (gamemodel && GameManager.isGameOver(gamemodel)) {
-      GNUGoClient.getStatus(gamemodel).then((res) => {
+    if (gameModel && GameManager.isGameOver(gameModel)) {
+      GNUGoClient.getStatus(gameModel).then((res) => {
         let message = `white score ${res.whiteScore}`;
         message += `\nblack score ${res.blackScore}`;
         message += `\nkomi: ${res.komi}`;
@@ -106,7 +106,7 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   return (
     <GameContext.Provider
       value={{
-        gamemodel,
+        gameModel,
         currentError,
         addStone,
         undo,

@@ -76,10 +76,31 @@ class GameManager {
     }
     return differences[0];
   }
-  playAIMove() {
-    console.log("playing the best move for " + this.gameInstance.turn);
+  private static GetKillStreak(gameModel: GameModel, color: WGo.B | WGo.W) {
+    const lastCaptures = gameModel.stack
+      .filter((pos) => pos.color == color)
+      .map((pos) => pos.capCount[color == 1 ? "black" : "white"])
+      .reverse();
+    let killStreak = 0;
+    for (let i = 1; i < lastCaptures.length; i++) {
+      if (lastCaptures[i - 1] > lastCaptures[i]) {
+        killStreak++;
+      } else {
+        break;
+      }
+    }
+    return killStreak;
   }
-
+  static isGameOver(gameModel: GameModel) {
+    const lastTwoPositions = gameModel.stack.slice(
+      -Math.min(gameModel.stack.length, 2)
+    );
+    const gameOver =
+      lastTwoPositions.length == 2 &&
+      GameManager.getDifferences(lastTwoPositions[0], lastTwoPositions[1])
+        .length == 0;
+    return gameOver;
+  }
   private getValidMoves() {
     const validMoves = this.getPosition()
       .schema.map((_, i) => {
@@ -115,22 +136,6 @@ class GameManager {
     }
   }
 
-  private static GetKillStreak(gameModel: GameModel, color: WGo.B | WGo.W) {
-    const lastCaptures = gameModel.stack
-      .filter((pos) => pos.color == color)
-      .map((pos) => pos.capCount[color == 1 ? "black" : "white"])
-      .reverse();
-    let killStreak = 0;
-    for (let i = 1; i < lastCaptures.length; i++) {
-      if (lastCaptures[i - 1] > lastCaptures[i]) {
-        killStreak++;
-      } else {
-        break;
-      }
-    }
-    return killStreak;
-  }
-
   play(row: number, col: number) {
     const turn = this.getModel().turn;
     const result = this.gameInstance.play(row, col);
@@ -156,16 +161,7 @@ class GameManager {
       this.gameInstance.popPosition();
     }
   }
-  static isGameOver(gameModel: GameModel) {
-    const lastTwoPositions = gameModel.stack.slice(
-      -Math.min(gameModel.stack.length, 2)
-    );
-    const gameOver =
-      lastTwoPositions.length == 2 &&
-      GameManager.getDifferences(lastTwoPositions[0], lastTwoPositions[1])
-        .length == 0;
-    return gameOver;
-  }
+
   pass() {
     this.gameInstance.pass();
   }
@@ -180,8 +176,6 @@ class GameManager {
       return pos;
     });
     this.gameInstance.turn = newModel.turn;
-    //ai
-    // GNUGoClient.setGNUGoBoard(this.getModel());
   }
   //this is used pretty much only for UI, what should go here is stuff we want to retain for rendering, this is also what is saved in local storage, so we need to deserialize it.
   //we need to serialize the WGo position because we can then use it to load a new model.
@@ -191,7 +185,7 @@ class GameManager {
       position: this.gameInstance.getPosition(),
       turn: this.gameInstance.turn,
       size: this.size,
-    } as GameModel;
+    };
   }
 }
 
