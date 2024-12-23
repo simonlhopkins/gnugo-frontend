@@ -73,6 +73,7 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
       setCurrentError(play);
       return;
     }
+    setCurrentError(null);
     setGameState(gameManager.getModel());
   };
   const undo = () => {
