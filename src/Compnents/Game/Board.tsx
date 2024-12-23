@@ -183,11 +183,13 @@ interface StyledBoardProps {
 const StyledBoard = styled.div<StyledBoardProps>`
   display: grid;
   width: 900px;
+  max-width: 100%;
   background-image: url("/Prisoner.jpg");
   aspect-ratio: 1;
   grid-template-rows: repeat(${(props) => props.$size}, 1fr);
   grid-template-columns: repeat(${(props) => props.$size}, 1fr);
   .square {
+    max-width: 100px;
     position: relative;
     display: flex;
     align-items: center;

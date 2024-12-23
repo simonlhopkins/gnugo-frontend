@@ -1,6 +1,10 @@
 import GameManager, { GameModel } from "./GameManager";
 
-const gnugoHost = "https://gnugo.cluberic.com";
+console.log(import.meta.env.MODE);
+const gnugoHost =
+  import.meta.env.MODE == "development"
+    ? "http://localhost:3000"
+    : "https://gnugo.cluberic.com";
 class GNUGoClient {
   private static async GNUGoServerCall(
     url: string,
@@ -28,7 +32,7 @@ class GNUGoClient {
     }
   }
 
-  static moveListFromPosition(position: WGo.Position, size: number) {
+  private static moveListFromPosition(position: WGo.Position, size: number) {
     return position.schema
       .map((color, i) => {
         const rowCol = GameManager.rowColFromIndex(i, size);
