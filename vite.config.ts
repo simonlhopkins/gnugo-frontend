@@ -12,7 +12,7 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
-      includeAssets: ["favicon.ico"],
+      includeAssets: ["favicon.ico", "sounds/*.mp3", "*.jpg"],
       manifest: {
         name: "Halo GO",
         short_name: "HaloGO",
