@@ -3,6 +3,7 @@ import Board from "./Compnents/Game/Board";
 import { GameContextProvider } from "./Compnents/Game/GameContext";
 import chicagoFLF from "./assets/chicago/ChicagoFLF.ttf";
 import geneva from "./assets/Geneva Font/Geneva Regular.ttf";
+import handelgothic from "./assets/handelgothic-bt/HandelGothic Regular.ttf";
 
 import Game from "./Compnents/Game/Game";
 import { BrowserRouter, Route, Routes } from "react-router";
@@ -20,6 +21,10 @@ const GlobalStyle = createGlobalStyle`
     src: url(${geneva}) format('truetype');
     font-style: normal;
   }
+  @font-face {
+  font-family: "handelgothic";
+  src: url(${handelgothic}) format("truetype");
+}
   body {
     font-family: 'chicagoFLF';
   }
