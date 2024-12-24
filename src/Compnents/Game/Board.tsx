@@ -12,31 +12,28 @@ interface Props {
   onSquareClick(row: number, col: number): void;
 }
 const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
-  const size = gameModel.size;
-
   const [mouseOverSquare, setMouseOverSquare] = useState<{
     row: number;
     col: number;
   } | null>(null);
-
-  const getSymbol = (gameModel: GameModel, row: number, col: number) => {
-    //top
-    const boardArr = gameModel.position.schema;
-    if (boardArr[row * size + col] == 1) {
-      return <div className="piece">⚫</div>;
-    } else if (boardArr[row * size + col] == -1) {
-      return <div className="piece">⚪</div>;
+  const stoneCharFromNumber = (num: number) => {
+    if (num == -1) {
+      return "⚪";
+    } else if (num == 1) {
+      return "⚫";
+    } else {
+      return null;
     }
   };
   const getValueAtSquare = (gameModel: GameModel, row: number, col: number) => {
-    return gameModel.position.schema[row * size + col];
+    return gameModel.position.schema[row * gameModel.size + col];
   };
   const getSquares = (gameModel: GameModel) => {
     const squares = [];
     const mostRecentPlace = GameManager.getMostRecentMove(gameModel);
 
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
+    for (let i = 0; i < gameModel.size; i++) {
+      for (let j = 0; j < gameModel.size; j++) {
         const row = i;
         const col = j;
         const isMostReventPlace = mostRecentPlace
@@ -48,12 +45,13 @@ const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
             mouseOverSquare.row == row &&
             mouseOverSquare.col == col
           : false;
+        const char = stoneCharFromNumber(getValueAtSquare(gameModel, row, col));
         squares.push(
           <GoSquare
             key={`${row}, ${col}`}
             row={row}
             col={col}
-            size={size}
+            size={gameModel.size}
             showShadowPiece={showShadowPiece}
             disabled={disabled}
             onClick={function (): void {
@@ -64,10 +62,10 @@ const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
             }}
             mostRecentPlace={isMostReventPlace}
           >
-            {getSymbol(gameModel, i, j)}
+            {char && <div className="piece">{char}</div>}
             {showShadowPiece && (
               <div className={clsx("piece", "ghost")}>
-                {gameModel.turn == -1 ? "⚪" : "⚫"}
+                {stoneCharFromNumber(gameModel.turn)}
               </div>
             )}
           </GoSquare>
@@ -78,14 +76,16 @@ const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
   };
 
   return (
-    <StyledBoard
-      $size={size}
-      onMouseLeave={() => {
-        setMouseOverSquare(null);
-      }}
-    >
-      {getSquares(gameModel)}
-    </StyledBoard>
+    <>
+      <StyledBoard
+        $size={gameModel.size}
+        onMouseLeave={() => {
+          setMouseOverSquare(null);
+        }}
+      >
+        {getSquares(gameModel)}
+      </StyledBoard>
+    </>
   );
 };
 interface StyledBoardProps {
@@ -93,11 +93,12 @@ interface StyledBoardProps {
 }
 
 const StyledBoard = styled.div<StyledBoardProps>`
+  /* position: absolute; */
   display: grid;
-  flex: 1;
   justify-content: center;
   /* width: 900px; */
-  max-width: 100%;
+  width: 100%;
+  max-width: 700px;
   background-image: url("/Blood_gulch.jpg");
   background-size: contain;
   aspect-ratio: 1;
@@ -123,6 +124,11 @@ const StyledBoard = styled.div<StyledBoardProps>`
       z-index: 1;
       &.ghost {
         opacity: 0.5;
+      }
+    }
+    @media (max-width: 600px) {
+      .piece {
+        font-size: 2rem; /* Adjust the font size for smaller screens */
       }
     }
   }

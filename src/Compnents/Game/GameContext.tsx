@@ -31,7 +31,7 @@ export const useGameContext = (): GameContextType => {
 interface GameContextProviderProps {
   children: ReactNode;
 }
-const size = 9;
+const size = 11;
 export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   children,
 }) => {
