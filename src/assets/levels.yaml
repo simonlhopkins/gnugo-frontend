@@ -1,0 +1,16 @@
+- id: 1
+  thumbnail: "/levelThumbnails/Battle_Creek.jpeg"
+  title: "Battle Creek"
+  description: "Splash Splash Bang Bang"
+- id: 2
+  thumbnail: "/levelThumbnails/Sidewinder.webp"
+  title: "Sidewinder"
+  description: "Red Blood, White Snow"
+- id: 3
+  thumbnail: "/levelThumbnails/DamnationPC.webp"
+  title: "Damnation"
+  description: "Covenant Hydro-Processing Center."
+- id: 4
+  thumbnail: "/levelThumbnails/RatRace.webp"
+  title: "Rat Race"
+  description: "Up the Ramps, Down the Tubes."

@@ -44,6 +44,7 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   const gameManager = useMemo(() => new GameManager(size), []);
   useEffect(() => {
     if (gameModel) {
+      console.log("loading model");
       gameManager.loadModel(gameModel);
     }
     setGameModel(gameManager.getModel());

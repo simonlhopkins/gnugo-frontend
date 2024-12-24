@@ -8,6 +8,7 @@
     "allowJs": true,
     "declaration": true,
     "typeRoots": ["./src/types"],
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "types": ["@modyfi/vite-plugin-yaml/modules"]
   }
 }

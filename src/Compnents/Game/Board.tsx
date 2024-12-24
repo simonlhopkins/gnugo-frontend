@@ -1,10 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { useGameContext } from "./GameContext";
 import GameManager, { GameModel } from "./GameManager";
 import clsx from "clsx";
-import GNUGoClient from "./GNUGoClient";
 import GoSquare from "./GoSquare";
+import { useSearchParams } from "react-router";
+import LevelsYAML from "../../assets/levels.yaml";
+
+function getMapBackgroundUrl(id: number): string | null {
+  const levels = LevelsYAML as any[];
+  console.log(levels);
+  const foundEntry = levels.find((item) => item.id == id);
+  return foundEntry ? foundEntry.thumbnail : null;
+}
 
 interface Props {
   gameModel: GameModel;
@@ -12,6 +19,10 @@ interface Props {
   onSquareClick(row: number, col: number): void;
 }
 const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const mapUrlParam = searchParams.get("mapId");
+  const mapID = mapUrlParam ? parseInt(mapUrlParam) : null;
+  console.log(mapID);
   const [mouseOverSquare, setMouseOverSquare] = useState<{
     row: number;
     col: number;
@@ -74,10 +85,13 @@ const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
     }
     return squares;
   };
-
+  const backgroundURL = mapID ? getMapBackgroundUrl(mapID) : null;
   return (
     <>
       <StyledBoard
+        style={{
+          backgroundImage: `url(${backgroundURL || "/halo_go_512x512.png"})`,
+        }}
         $size={gameModel.size}
         onMouseLeave={() => {
           setMouseOverSquare(null);
@@ -99,7 +113,6 @@ const StyledBoard = styled.div<StyledBoardProps>`
   /* width: 900px; */
   width: 100%;
   max-width: 700px;
-  background-image: url("/Blood_gulch.jpg");
   background-size: contain;
   aspect-ratio: 1;
   grid-template-rows: repeat(${(props) => props.$size}, 1fr);
