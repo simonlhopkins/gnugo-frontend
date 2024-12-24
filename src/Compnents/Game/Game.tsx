@@ -11,9 +11,6 @@ const Game = () => {
     useGameContext();
   const [loading, setLoading] = useState(false);
 
-  if (gameModel == null) {
-    return <p>gamemodel is null</p>;
-  }
   const playAIMove = (gameModel: GameModel) => {
     setLoading(true);
     GNUGoClient.getBestPosition(gameModel)
@@ -23,7 +20,7 @@ const Game = () => {
         } else if (res == "resign") {
           console.log("resign");
         } else {
-          const rowCol = GNUGoClient.letterNumberToRowCol(res, size);
+          const rowCol = GNUGoClient.letterNumberToRowCol(res, gameModel.size);
           addStone(rowCol.row, rowCol.col);
         }
       })
@@ -32,9 +29,11 @@ const Game = () => {
       });
   };
   useEffect(() => {
+    if (gameModel) {
+    }
     const handleKeyPress = (event: any) => {
       if (event.key === "/") {
-        if (!loading) {
+        if (!loading && gameModel) {
           console.log("playing ai move");
           playAIMove(gameModel);
         }
@@ -61,7 +60,7 @@ const Game = () => {
         return `unrecognized error: ${currentError}`;
     }
   };
-  const size = gameModel.size;
+  if (!gameModel) return <p>game model is null</p>;
   return (
     <StyledGame>
       <div className="buttonParent">
