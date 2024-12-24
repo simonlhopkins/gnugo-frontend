@@ -131,9 +131,7 @@ const Game = () => {
 const StyledGame = styled.div`
   padding: 20px;
   box-sizing: border-box;
-  height: 100vh;
   width: 100%;
-  overflow-y: hidden;
   display: flex;
   align-items: center;
   flex-direction: column;
