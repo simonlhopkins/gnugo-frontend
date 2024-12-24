@@ -26,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
   src: url(${handelgothic}) format("truetype");
 }
   body {
-    font-family: 'chicagoFLF';
+    font-family: 'handelgothic';
   }
 `;
 function App() {

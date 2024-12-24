@@ -101,6 +101,17 @@ class GameManager {
         .length == 0;
     return gameOver;
   }
+
+  static GameModelFromPosition(position: WGo.Position): GameModel {
+    const initPos = new WGo.Position();
+    Object.assign(initPos, position);
+    return {
+      size: position.size,
+      stack: [initPos],
+      position: initPos,
+      turn: initPos.color,
+    };
+  }
   private getValidMoves() {
     const validMoves = this.getPosition()
       .schema.map((_, i) => {

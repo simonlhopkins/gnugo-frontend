@@ -63,6 +63,7 @@ const Game = () => {
   if (!gameModel) return <p>game model is null</p>;
   return (
     <StyledGame>
+      <a href="/levelSelect">back</a>
       <div className="buttonParent">
         <button
           onClick={() => {

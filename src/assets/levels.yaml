@@ -14,3 +14,11 @@
   thumbnail: "/levelThumbnails/RatRace.webp"
   title: "Rat Race"
   description: "Up the Ramps, Down the Tubes."
+- id: 5
+  thumbnail: "/levelThumbnails/Prisoner.webp"
+  title: "Prisoner"
+  description: "Get on Top."
+- id: 6
+  thumbnail: "/levelThumbnails/Hangemhigh.webp"
+  title: "Hang 'Em High"
+  description: "Tombstones for Everybody."

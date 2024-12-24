@@ -4,11 +4,13 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import GameManager, { GameModel } from "./GameManager";
 import useLocalStorage from "use-local-storage";
 import GNUGoClient from "./GNUGoClient";
+import { useSearchParams } from "react-router";
 
 interface GameContextType {
   gameModel: GameModel | null;
@@ -40,13 +42,28 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
     null
   );
   const [currentError, setCurrentError] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialLoad = useRef(true);
+
   //   const gameRef = useRef<WGo.Game | null>(null);
   const gameManager = useMemo(() => new GameManager(size), []);
   useEffect(() => {
+    // console.log("initial load");
     if (gameModel) {
-      console.log("loading model");
+      console.log("loading model from local storage");
       gameManager.loadModel(gameModel);
     }
+    // const urlPosition = searchParams.get("position");
+    // if (urlPosition) {
+    //   const position = JSON.parse(atob(urlPosition)) as WGo.Position;
+    //   console.log(position);
+    //   const gameModelFromURL = GameManager.GameModelFromPosition(position);
+    //   console.log("game model from url: ");
+    //   console.log(gameModelFromURL);
+    //   console.log("init from url");
+
+    //   gameManager.loadModel(gameModelFromURL);
+    // }
     setGameModel(gameManager.getModel());
   }, []);
   useEffect(() => {
@@ -62,6 +79,14 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
 
     // Add event listeners to the window object
     window.addEventListener("focus", handleFocus);
+    if (gameModel) {
+      console.log(gameModel);
+      setSearchParams((params) => {
+        console.log(params);
+        params.set("position", btoa(JSON.stringify(gameModel.position)));
+        return params;
+      });
+    }
 
     // Clean up the event listeners when the component unmounts
     return () => {

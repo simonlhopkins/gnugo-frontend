@@ -18,6 +18,7 @@ const LevelSelectScreen = () => {
                 title={item.title}
                 description={item.description}
                 selected={selectedMap ? selectedMap == item.id : false}
+                levelID={item.id}
                 onClick={() => {
                   setSelectedMap(item.id as number);
                 }}
@@ -26,14 +27,6 @@ const LevelSelectScreen = () => {
           ))}
         </ul>
       </div>
-      <button>
-        <a href="/">Back</a>
-      </button>
-      <button>
-        <a href={`/game?${selectedMap ? `mapId=${selectedMap}` : ""}`}>
-          Accept
-        </a>
-      </button>
     </StyledWrapper>
   );
 };
@@ -48,11 +41,14 @@ const StyledWrapper = styled.div`
   }
   h1 {
     margin-left: 50px;
+    color: #5bb8fc;
   }
   ul,
   ol {
     margin: 50px 0;
     display: flex;
+
+    align-items: center;
     gap: 10px;
     white-space: nowrap;
     overflow-x: scroll;
@@ -60,17 +56,14 @@ const StyledWrapper = styled.div`
     list-style: none; /* Removes bullets or numbers */
     padding: 0; /* Removes padding */
   }
+  @media (max-width: 600px) {
+    ul {
+      flex-direction: column;
+    }
+  }
   li {
     overflow-y: visible;
     /* display: inline-block; */
-  }
-  ul li:last-child {
-    /* Your styles for the last <li> */
-    margin-right: 60px;
-  }
-  ul li:first-child {
-    /* Your styles for the last <li> */
-    margin-left: 60px;
   }
 `;
 

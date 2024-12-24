@@ -7,6 +7,7 @@ interface Props {
   title: string;
   description: string;
   selected: boolean;
+  levelID: number;
   onClick(): void;
 }
 const LevelCard = ({
@@ -14,6 +15,7 @@ const LevelCard = ({
   title,
   description,
   selected,
+  levelID,
   onClick,
 }: Props) => {
   return (
@@ -25,6 +27,14 @@ const LevelCard = ({
       <img src={thumbnail} alt="" />
       <h2>{title}</h2>
       <p>{description}</p>
+      {selected && (
+        <a
+          style={{ marginTop: "auto", fontSize: "2rem" }}
+          href={`/game?mapId=${levelID}`}
+        >
+          Accept
+        </a>
+      )}
     </StyledWrapper>
   );
 };

@@ -8,7 +8,6 @@ import LevelsYAML from "../../assets/levels.yaml";
 
 function getMapBackgroundUrl(id: number): string | null {
   const levels = LevelsYAML as any[];
-  console.log(levels);
   const foundEntry = levels.find((item) => item.id == id);
   return foundEntry ? foundEntry.thumbnail : null;
 }
@@ -22,7 +21,6 @@ const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mapUrlParam = searchParams.get("mapId");
   const mapID = mapUrlParam ? parseInt(mapUrlParam) : null;
-  console.log(mapID);
   const [mouseOverSquare, setMouseOverSquare] = useState<{
     row: number;
     col: number;
