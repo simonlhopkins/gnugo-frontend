@@ -33,6 +33,7 @@ const LevelSelectScreen = () => {
 
 const StyledWrapper = styled.div`
   font-family: "handelgothic";
+  max-height: 100%;
   /* width: 100%; */
   .listContainer {
     background: linear-gradient(to bottom, rgba(4, 24, 63, 0.8), transparent);
@@ -52,19 +53,19 @@ const StyledWrapper = styled.div`
     gap: 10px;
     white-space: nowrap;
     overflow-x: scroll;
-    overflow-y: visible;
     list-style: none; /* Removes bullets or numbers */
     padding: 0; /* Removes padding */
   }
-  @media (max-width: 600px) {
+  li {
+    /* overflow: hidden; */
+  }
+  /* @media (max-width: 600px) {
     ul {
+      overflow-x: hidden;
+      overflow-y: scroll;
       flex-direction: column;
     }
-  }
-  li {
-    overflow-y: visible;
-    /* display: inline-block; */
-  }
+  } */
 `;
 
 export default LevelSelectScreen;

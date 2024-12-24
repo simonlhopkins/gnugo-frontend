@@ -44,7 +44,8 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   position: relative;
   width: 400px;
-  height: 500px;
+  aspect-ratio: 0.8;
+  max-width: 100vw;
   color: #5bb8fc;
   background-color: rgba(1, 6, 29, 0.8);
   border-radius: 20px;
@@ -56,7 +57,7 @@ const StyledWrapper = styled.div`
     background-color: rgba(4, 19, 53, 0.8);
   }
   img {
-    width: 100%;
+    /* width: 100%; */
     aspect-ratio: 1.6;
     object-fit: cover;
   }
