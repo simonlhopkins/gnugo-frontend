@@ -85,8 +85,8 @@ const Board = ({
                 {stoneCharFromNumber(gameModel.turn)}
               </div>
             )}
-            {isBlackTerritory && <p>B</p>}
-            {isWhiteTerritory && <p>W</p>}
+            {isBlackTerritory && <div className="terrirory black">B</div>}
+            {isWhiteTerritory && <div className="terrirory white">W</div>}
           </GoSquare>
         );
       }
@@ -130,6 +130,22 @@ const StyledBoard = styled.div<StyledBoardProps>`
 
   grid-template-rows: repeat(${(props) => props.$size}, 1fr);
   grid-template-columns: repeat(${(props) => props.$size}, 1fr);
+  .terrirory {
+    background-color: black;
+    color: white;
+    z-index: 1;
+    border-radius: 999px;
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &.white {
+      background-color: white;
+      color: black;
+    }
+  }
   .square {
     container-type: size;
     max-width: 100px;
