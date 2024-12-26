@@ -85,8 +85,8 @@ const Board = ({
                 {stoneCharFromNumber(gameModel.turn)}
               </div>
             )}
-            {isBlackTerritory && <h1>B</h1>}
-            {isWhiteTerritory && <h1>W</h1>}
+            {isBlackTerritory && <p>B</p>}
+            {isWhiteTerritory && <p>W</p>}
           </GoSquare>
         );
       }

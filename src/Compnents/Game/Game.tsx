@@ -39,6 +39,8 @@ const Game = () => {
   };
   const playAIMove = (gameModel: GameModel) => {
     setLoading(true);
+    setBlackTerritory([]);
+    setWhiteTerritory([]);
     GNUGoClient.getBestPosition(gameModel)
       .then((res) => {
         if (res == "PASS") {
@@ -82,6 +84,8 @@ const Game = () => {
           <button
             disabled={loading}
             onClick={() => {
+              setBlackTerritory([]);
+              setWhiteTerritory([]);
               resetBoard();
             }}
           >
@@ -90,6 +94,8 @@ const Game = () => {
           <button
             disabled={loading}
             onClick={() => {
+              setBlackTerritory([]);
+              setWhiteTerritory([]);
               onPass();
             }}
           >
