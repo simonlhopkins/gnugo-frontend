@@ -53,18 +53,30 @@ button {
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  touch-action: manipulation;
 }
 
-button:hover {
-  text-shadow: 0 0 5px #4074a1, /* Inner glow */ 0 0 10px #4074a1,
-    /* Medium glow */ 0 0 20px #4074a1, /* Outer glow */ 0 0 30px #4074a1; /* Larger outer glow */
-  background-color: #4074a1;
-  color: white;
-  border-color: #4074a1;
+/* Disabled state */
+button:disabled {
+  opacity: 0.5;
+  background-color: transparent;
+  cursor: not-allowed; /* Show a "not allowed" cursor */
+  text-shadow: none; /* Remove any glow effects */
+  pointer-events: none; /* Prevent interactions */
+}
+
+@media (hover: hover) {
+  button:hover {
+    text-shadow: 0 0 5px #4074a1, /* Inner glow */ 0 0 10px #4074a1,
+      /* Medium glow */ 0 0 20px #4074a1, /* Outer glow */ 0 0 30px #4074a1; /* Larger outer glow */
+    background-color: #4074a1;
+    color: white;
+    border-color: #4074a1;
+  }
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
+  /* :root {
     color: #213547;
     background-color: #ffffff;
   }
@@ -73,5 +85,5 @@ button:hover {
   }
   button {
     background-color: #f9f9f9;
-  }
+  } */
 }

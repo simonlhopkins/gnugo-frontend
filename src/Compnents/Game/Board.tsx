@@ -3,24 +3,21 @@ import styled from "styled-components";
 import GameManager, { GameModel } from "./GameManager";
 import clsx from "clsx";
 import GoSquare from "./GoSquare";
-import { useSearchParams } from "react-router";
-import LevelsYAML from "../../assets/levels.yaml";
-
-function getMapBackgroundUrl(id: number): string | null {
-  const levels = LevelsYAML as any[];
-  const foundEntry = levels.find((item) => item.id == id);
-  return foundEntry ? foundEntry.thumbnail : null;
-}
 
 interface Props {
   gameModel: GameModel;
   disabled: boolean;
+  blackTerritory: { row: number; col: number }[];
+  whiteTerritory: { row: number; col: number }[];
   onSquareClick(row: number, col: number): void;
 }
-const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const mapUrlParam = searchParams.get("mapId");
-  const mapID = mapUrlParam ? parseInt(mapUrlParam) : null;
+const Board = ({
+  gameModel,
+  disabled,
+  blackTerritory,
+  whiteTerritory,
+  onSquareClick,
+}: Props) => {
   const [mouseOverSquare, setMouseOverSquare] = useState<{
     row: number;
     col: number;
@@ -55,6 +52,13 @@ const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
             mouseOverSquare.col == col
           : false;
         const char = stoneCharFromNumber(getValueAtSquare(gameModel, row, col));
+        const isBlackTerritory = blackTerritory.some(
+          (item) => item.row == row && item.col == col
+        );
+        const isWhiteTerritory = whiteTerritory.some(
+          (item) => item.row == row && item.col == col
+        );
+
         squares.push(
           <GoSquare
             key={`${row}, ${col}`}
@@ -67,29 +71,34 @@ const Board = ({ gameModel, disabled, onSquareClick }: Props) => {
               onSquareClick(row, col);
             }}
             onMouseOver={() => {
-              setMouseOverSquare({ row, col });
+              if (!isTouchDevice()) {
+                setMouseOverSquare({ row, col });
+              }
             }}
             mostRecentPlace={isMostReventPlace}
           >
-            {char && <div className="piece">{char}</div>}
+            {char && (
+              <div className="piece">{isBlackTerritory ? "!!!" : char}</div>
+            )}
             {showShadowPiece && (
               <div className={clsx("piece", "ghost")}>
                 {stoneCharFromNumber(gameModel.turn)}
               </div>
             )}
+            {isBlackTerritory && <h1>B</h1>}
+            {isWhiteTerritory && <h1>W</h1>}
           </GoSquare>
         );
       }
     }
     return squares;
   };
-  const backgroundURL = mapID ? getMapBackgroundUrl(mapID) : null;
   return (
     <>
       <StyledBoard
-        style={{
-          backgroundImage: `url(${backgroundURL || "/halo_go_512x512.png"})`,
-        }}
+        // style={{
+        //   backgroundImage: `url(${backgroundURL || "/halo_go_512x512.png"})`,
+        // }}
         $size={gameModel.size}
         onMouseLeave={() => {
           setMouseOverSquare(null);
@@ -107,21 +116,27 @@ interface StyledBoardProps {
 const StyledBoard = styled.div<StyledBoardProps>`
   /* position: absolute; */
   display: grid;
-  justify-content: center;
   /* width: 900px; */
-  width: 100%;
-  max-width: 700px;
-  background-size: contain;
+  /* width: min(100vw, 100vh); */
+  /* max-width: 100%; */
+  min-width: 300px;
+  height: 100%;
+  max-height: 100%;
+  @media (max-width: 600px) {
+    width: 100%;
+    height: auto;
+  }
   aspect-ratio: 1;
+
   grid-template-rows: repeat(${(props) => props.$size}, 1fr);
   grid-template-columns: repeat(${(props) => props.$size}, 1fr);
   .square {
+    container-type: size;
     max-width: 100px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* overflow: hidden; */
     &.recent {
       background-color: rebeccapurple;
     }
@@ -130,19 +145,22 @@ const StyledBoard = styled.div<StyledBoardProps>`
     }
     .piece {
       position: absolute;
-      font-size: 3rem;
+      font-size: 90cqw;
       pointer-events: none;
       z-index: 1;
       &.ghost {
         opacity: 0.5;
       }
     }
-    @media (max-width: 600px) {
-      .piece {
-        font-size: 2rem; /* Adjust the font size for smaller screens */
-      }
-    }
   }
 `;
+
+function isTouchDevice() {
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.maxTouchPoints > 0
+  );
+}
 
 export default Board;

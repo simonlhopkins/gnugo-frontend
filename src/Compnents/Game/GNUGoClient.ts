@@ -100,8 +100,10 @@ class GNUGoClient {
       gameModel.position,
       gameModel.size
     );
+
     const response = await GNUGoClient.GNUGoServerCall(`${gnugoHost}/status`, {
       moveList,
+      size: gameModel.size,
     });
     console.log(response);
     const { white, black, komi } = response.data;
@@ -114,8 +116,8 @@ class GNUGoClient {
     console.log("black score: " + blackScore);
     console.log("komi: " + komi);
     return {
-      whiteScore,
-      blackScore,
+      whiteTerritory: white as string[],
+      blackTerritory: black as string[],
       komi: komi as number,
     };
   }

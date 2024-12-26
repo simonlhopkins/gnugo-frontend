@@ -45,7 +45,7 @@ const StyledWrapper = styled.div`
   position: relative;
   width: 400px;
   aspect-ratio: 0.8;
-  max-width: 100vw;
+  max-width: 80vw;
   color: #5bb8fc;
   background-color: rgba(1, 6, 29, 0.8);
   border-radius: 20px;

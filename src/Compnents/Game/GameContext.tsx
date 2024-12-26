@@ -43,6 +43,7 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   );
   const [currentError, setCurrentError] = useState<number | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
   const initialLoad = useRef(true);
 
   //   const gameRef = useRef<WGo.Game | null>(null);
@@ -81,11 +82,11 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
     window.addEventListener("focus", handleFocus);
     if (gameModel) {
       console.log(gameModel);
-      setSearchParams((params) => {
-        console.log(params);
-        params.set("position", btoa(JSON.stringify(gameModel.position)));
-        return params;
-      });
+      // setSearchParams((params) => {
+      //   console.log(params);
+      //   params.set("position", btoa(JSON.stringify(gameModel.position)));
+      //   return params;
+      // });
     }
 
     // Clean up the event listeners when the component unmounts
@@ -95,9 +96,10 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   }, [gameModel]);
 
   const addStone = async (x: number, y: number) => {
-    const play = gameManager.play(x, y);
-    if (!Array.isArray(play)) {
-      setCurrentError(play);
+    const playResult = gameManager.play(x, y);
+    if (!Array.isArray(playResult)) {
+      alert(GameManager.GetErrorText(playResult));
+      setCurrentError(playResult);
       return;
     }
     setCurrentError(null);
@@ -116,17 +118,8 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   };
 
   const pass = () => {
-    if (gameModel && GameManager.isGameOver(gameModel)) {
-      GNUGoClient.getStatus(gameModel).then((res) => {
-        let message = `white score ${res.whiteScore}`;
-        message += `\nblack score ${res.blackScore}`;
-        message += `\nkomi: ${res.komi}`;
-        alert(message);
-      });
-    } else {
-      gameManager.pass();
-      setGameModel(gameManager.getModel());
-    }
+    gameManager.pass();
+    setGameModel(gameManager.getModel());
   };
 
   return (

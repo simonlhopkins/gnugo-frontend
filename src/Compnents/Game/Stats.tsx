@@ -24,6 +24,10 @@ const Stats = ({ gameModel }: Props) => {
             <td>Black</td>
             <td>{gameModel.position.capCount.black}</td>
           </tr>
+          <tr>
+            <td>Turn</td>
+            <td>{gameModel.turn == 1 ? "Black" : "White"}</td>
+          </tr>
         </tbody>
       </StyledTable>
     </>

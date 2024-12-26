@@ -112,6 +112,21 @@ class GameManager {
       turn: initPos.color,
     };
   }
+
+  static GetErrorText = (errorNum: number) => {
+    switch (errorNum) {
+      case 1:
+        return "given coordinates are not on board.";
+      case 2:
+        return "on given coordinates already is a stone.";
+      case 3:
+        return "suicide (currently they are forbbiden).";
+      case 4:
+        return "repeated position.";
+      default:
+        return `unrecognized error: ${errorNum}`;
+    }
+  };
   private getValidMoves() {
     const validMoves = this.getPosition()
       .schema.map((_, i) => {
