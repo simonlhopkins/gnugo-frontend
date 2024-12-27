@@ -159,7 +159,18 @@ const StyledBoard = styled.div<StyledBoardProps>`
     &.disabled {
       pointer-events: none;
     }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     .piece {
+      animation: fadeIn 0.5s ease-out;
       position: absolute;
       font-size: 90cqw;
       pointer-events: none;

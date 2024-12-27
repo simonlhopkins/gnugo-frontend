@@ -9,7 +9,7 @@ const MainMenu = () => {
           <a href="/levelSelect">Play</a>
         </li>
         <li>
-          <a href="">Credits</a>
+          <a href="/credits">Credits</a>
         </li>
         <li>
           <a href="">Quit</a>

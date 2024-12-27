@@ -6,7 +6,7 @@ import { styled } from "styled-components";
 import GameManager, { GameModel } from "./GameManager";
 import Stats from "./Stats";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-import { useSearchParams } from "react-router";
+import { Navigate, useSearchParams } from "react-router";
 import LevelsYAML from "../../assets/levels.yaml";
 
 const Game = () => {
@@ -16,8 +16,8 @@ const Game = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [blackTerritory, setBlackTerritory] = useState<string[]>([]);
   const [whiteTerritory, setWhiteTerritory] = useState<string[]>([]);
-  const mapUrlParam = searchParams.get("mapId");
-  const mapID = mapUrlParam ? parseInt(mapUrlParam) : null;
+  const mapID = Number(searchParams.get("mapId")) || null;
+  const level = Number(searchParams.get("level")) || 1;
   const onPass = () => {
     console.log(gameModel);
     if (gameModel && GameManager.isGameOver(gameModel)) {
@@ -44,7 +44,7 @@ const Game = () => {
     setLoading(true);
     setBlackTerritory([]);
     setWhiteTerritory([]);
-    GNUGoClient.getBestPosition(gameModel, 1)
+    GNUGoClient.GetBestPosition(gameModel, level)
       .then((res) => {
         if (res == "PASS") {
           onPass();
@@ -81,6 +81,7 @@ const Game = () => {
 
   return (
     <StyledGame>
+      {mapID == null && <Navigate to={"/levelSelect"} />}
       <div className="topSection">
         <a href="/levelSelect">change level</a>
         <a href="/">main menu</a>

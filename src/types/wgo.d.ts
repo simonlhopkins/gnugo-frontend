@@ -5,7 +5,7 @@ declare namespace WGo {
 
   class Position {
     size: number;
-    constructor();
+    constructor(size?: number);
     get(x: number, y: number): any;
     set(x: number, y: number, value: any): void;
     clear(): void;

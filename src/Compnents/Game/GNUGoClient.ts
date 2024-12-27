@@ -54,11 +54,11 @@ class GNUGoClient {
       })
       .filter((item) => item != null);
   }
-  static async getBestPosition(gameModel: GameModel, level: number) {
-    //get the last 3 game states, or however many there ate
-
+  static async GetBestPosition(gameModel: GameModel, level: number) {
+    //get the last 3 game states, or however many there are
+    const numMovesPrior = 3;
     const recentHistory = gameModel.stack.slice(
-      -Math.min(gameModel.stack.length, 3)
+      -Math.min(gameModel.stack.length, numMovesPrior)
     );
     const moves = [];
     for (let i = 1; i < recentHistory.length; i++) {
@@ -70,6 +70,7 @@ class GNUGoClient {
         });
       }
     }
+    console.log(moves);
     console.log("game mode turn " + gameModel.turn);
     const response = await GNUGoClient.GNUGoServerCall(
       `${gnugoHost}/getBestPosition`,

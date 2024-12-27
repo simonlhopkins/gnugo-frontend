@@ -38,7 +38,7 @@ class GameManager {
     if (lastTwoMoves.length != 2) {
       return null;
     } else {
-      return this.findMove(lastTwoMoves[0], lastTwoMoves[1]);
+      return GameManager.findMove(lastTwoMoves[0], lastTwoMoves[1]);
     }
   }
   static getDifferences(
@@ -127,6 +127,13 @@ class GameManager {
         return `unrecognized error: ${errorNum}`;
     }
   };
+
+  static CreateBlankWGoPosition(size: number): WGo.Position {
+    const newPos = new WGo.Position(size);
+    newPos.capCount = { black: 0, white: 0 };
+    newPos.color = 1;
+    return newPos;
+  }
   private getValidMoves() {
     const validMoves = this.getPosition()
       .schema.map((_, i) => {
@@ -192,19 +199,29 @@ class GameManager {
     this.gameInstance.pass();
   }
   resetBoard() {
+    // this.gameInstance.pushPosition(
+    //   GameManager.CreateBlankWGoPosition(this.size)
+    // );
+    // console.log(this.getModel().position);
     this.gameInstance.firstPosition();
   }
 
   loadModel(newModel: GameModel) {
-    this.gameInstance.stack = newModel.stack.map((item) => {
-      const pos = new WGo.Position();
-      Object.assign(pos, item);
-      return pos;
-    });
-    this.gameInstance.turn = newModel.turn;
+    if (newModel.position.size != this.size) {
+      console.log(
+        "trying to load a model that is not the current size, not loading it..."
+      );
+    } else {
+      this.gameInstance.stack = newModel.stack.map((item) => {
+        const pos = new WGo.Position();
+        Object.assign(pos, item);
+        return pos;
+      });
+      this.gameInstance.turn = newModel.turn;
+    }
   }
   //this is used pretty much only for UI, what should go here is stuff we want to retain for rendering, this is also what is saved in local storage, so we need to deserialize it.
-  //we need to serialize the WGo position because we can then use it to load a new model.
+  //we need to serialize the WGo position because we can then use it to load a new model. gameinstance is a WGo instance
   getModel(): GameModel {
     return {
       stack: this.gameInstance.stack,

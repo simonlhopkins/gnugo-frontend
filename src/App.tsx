@@ -9,6 +9,7 @@ import Game from "./Compnents/Game/Game";
 import { BrowserRouter, Route, Routes } from "react-router";
 import MainMenu from "./Compnents/Menus/MainMenu";
 import LevelSelectScreen from "./Compnents/Menus/LevelSelectScreen/LevelSelectScreen";
+import Credits from "./Compnents/Menus/Credits";
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -45,6 +46,7 @@ function App() {
               </GameContextProvider>
             }
           />
+          <Route path="credits" element={<Credits />} />
         </Routes>
       </BrowserRouter>
     </>

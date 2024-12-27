@@ -44,7 +44,8 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const initialLoad = useRef(true);
-  const [boardSize, setBoardSize] = useState(9);
+  // const [boardSize, setBoardSize] = useState(9);
+  const boardSize = Number(searchParams.get("boardSize")) || 9;
 
   //   const gameRef = useRef<WGo.Game | null>(null);
   const gameManager = useMemo(() => new GameManager(boardSize), [boardSize]);
