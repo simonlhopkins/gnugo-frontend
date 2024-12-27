@@ -4,6 +4,7 @@ import styled from "styled-components";
 const MainMenu = () => {
   return (
     <Wrapper>
+      <img src="/go_logo.png"></img>
       <ul>
         <li>
           <a href="/levelSelect">Play</a>
@@ -20,6 +21,9 @@ const MainMenu = () => {
 };
 
 const Wrapper = styled.div`
+  img {
+    max-width: 80%;
+  }
   font-family: "handelgothic";
   text-transform: uppercase;
   display: flex;
