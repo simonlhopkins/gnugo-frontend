@@ -33,7 +33,6 @@ export const useGameContext = (): GameContextType => {
 interface GameContextProviderProps {
   children: ReactNode;
 }
-const size = 11;
 export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   children,
 }) => {
@@ -45,32 +44,23 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const initialLoad = useRef(true);
+  const [boardSize, setBoardSize] = useState(9);
 
   //   const gameRef = useRef<WGo.Game | null>(null);
-  const gameManager = useMemo(() => new GameManager(size), []);
+  const gameManager = useMemo(() => new GameManager(boardSize), [boardSize]);
+
   useEffect(() => {
     // console.log("initial load");
     if (gameModel) {
       console.log("loading model from local storage");
       gameManager.loadModel(gameModel);
     }
-    // const urlPosition = searchParams.get("position");
-    // if (urlPosition) {
-    //   const position = JSON.parse(atob(urlPosition)) as WGo.Position;
-    //   console.log(position);
-    //   const gameModelFromURL = GameManager.GameModelFromPosition(position);
-    //   console.log("game model from url: ");
-    //   console.log(gameModelFromURL);
-    //   console.log("init from url");
 
-    //   gameManager.loadModel(gameModelFromURL);
-    // }
     setGameModel(gameManager.getModel());
   }, []);
   useEffect(() => {
     // Handler for when the tab/window gains focus
     const handleFocus = () => {
-      console.log("Tab is focused");
       //if you have multiple tabs open, the gamestate, which is just a local storage object, may have been modified, so the internal state of Gamemanager is now out of sync, luckily gamemanager can pick right back up when we load the model
       if (gameModel) {
         gameManager.loadModel(gameModel);
@@ -80,14 +70,6 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
 
     // Add event listeners to the window object
     window.addEventListener("focus", handleFocus);
-    if (gameModel) {
-      console.log(gameModel);
-      // setSearchParams((params) => {
-      //   console.log(params);
-      //   params.set("position", btoa(JSON.stringify(gameModel.position)));
-      //   return params;
-      // });
-    }
 
     // Clean up the event listeners when the component unmounts
     return () => {

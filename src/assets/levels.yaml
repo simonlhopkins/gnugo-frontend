@@ -22,3 +22,31 @@
   thumbnail: "/levelThumbnails/Hangemhigh.webp"
   title: "Hang 'Em High"
   description: "Tombstones for Everybody."
+- id: 7
+  thumbnail: "/levelThumbnails/Chill_OutPC.webp"
+  title: "Chill Out"
+  description: "Dude, you really need to..."
+- id: 8
+  thumbnail: "/levelThumbnails/Halo_CE_Derelict.webp"
+  title: "Derelict"
+  description: "Deep-Space Anomoly #0198"
+- id: 9
+  thumbnail: "/levelThumbnails/1600px-HCE_BoardingAction_Overview.webp"
+  title: "Boarding Action"
+  description: "Ship-to-Ship Combat"
+- id: 10
+  thumbnail: "/levelThumbnails/Blood_gulch.jpg"
+  title: "Blood Gultch"
+  description: "The Quick and the Dead"
+- id: 11
+  thumbnail: "/levelThumbnails/Wizard.webp"
+  title: "Wizard"
+  description: "Round and Round and Round"
+- id: 12
+  thumbnail: "/levelThumbnails/Chiron_TL-34.webp"
+  title: "Chiron TL34"
+  description: "Spartan Clone Training Complex"
+- id: 13
+  thumbnail: "/levelThumbnails/Longest2.webp"
+  title: "Longest"
+  description: "A long walk down a short hall..."

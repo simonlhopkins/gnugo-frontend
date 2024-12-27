@@ -9,12 +9,12 @@ const Stats = ({ gameModel }: Props) => {
   return (
     <>
       <StyledTable>
-        <thead>
+        {/* <thead>
           <tr>
             <th>Name</th>
             <th>Kills</th>
           </tr>
-        </thead>
+        </thead> */}
         <tbody>
           <tr>
             <td>White</td>

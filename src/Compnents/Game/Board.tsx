@@ -121,9 +121,10 @@ const StyledBoard = styled.div<StyledBoardProps>`
   /* max-width: 100%; */
   min-width: 300px;
   height: 100%;
-  max-height: 100%;
+  max-height: 600px;
   @media (max-width: 600px) {
     width: 100%;
+    max-width: 600px;
     height: auto;
   }
   aspect-ratio: 1;
@@ -148,7 +149,6 @@ const StyledBoard = styled.div<StyledBoardProps>`
   }
   .square {
     container-type: size;
-    max-width: 100px;
     position: relative;
     display: flex;
     align-items: center;

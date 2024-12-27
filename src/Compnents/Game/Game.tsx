@@ -22,17 +22,20 @@ const Game = () => {
     console.log(gameModel);
     if (gameModel && GameManager.isGameOver(gameModel)) {
       setLoading(true);
-      GNUGoClient.getStatus(gameModel).then((res) => {
-        setLoading(false);
-        let message = `white score ${res.whiteTerritory.length}`;
-        message += `\nblack score ${res.blackTerritory.length}`;
-        message += `\nkomi: ${res.komi}`;
-        console.log(res.blackTerritory);
-        console.log(res.whiteTerritory);
-        setBlackTerritory(res.blackTerritory);
-        setWhiteTerritory(res.whiteTerritory);
-        alert(message);
-      });
+      GNUGoClient.getStatus(gameModel)
+        .then((res) => {
+          let message = `white score ${res.whiteTerritory.length}`;
+          message += `\nblack score ${res.blackTerritory.length}`;
+          message += `\nkomi: ${res.komi}`;
+          console.log(res.blackTerritory);
+          console.log(res.whiteTerritory);
+          setBlackTerritory(res.blackTerritory);
+          setWhiteTerritory(res.whiteTerritory);
+          alert(message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
       pass();
     }
@@ -41,7 +44,7 @@ const Game = () => {
     setLoading(true);
     setBlackTerritory([]);
     setWhiteTerritory([]);
-    GNUGoClient.getBestPosition(gameModel)
+    GNUGoClient.getBestPosition(gameModel, 1)
       .then((res) => {
         if (res == "PASS") {
           onPass();
@@ -79,7 +82,8 @@ const Game = () => {
   return (
     <StyledGame>
       <div className="topSection">
-        <a href="/levelSelect">back</a>
+        <a href="/levelSelect">change level</a>
+        <a href="/">main menu</a>
         <div className="buttonParent">
           <button
             disabled={loading}
@@ -142,7 +146,9 @@ const Game = () => {
                 GNUGoClient.letterNumberToRowCol(item, gameModel.size)
               )}
               onSquareClick={function (row: number, col: number): void {
-                addStone(row, col);
+                if (!loading) {
+                  addStone(row, col);
+                }
               }}
             />
           </TransformComponent>

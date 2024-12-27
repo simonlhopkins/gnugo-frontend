@@ -54,7 +54,7 @@ class GNUGoClient {
       })
       .filter((item) => item != null);
   }
-  static async getBestPosition(gameModel: GameModel) {
+  static async getBestPosition(gameModel: GameModel, level: number) {
     //get the last 3 game states, or however many there ate
 
     const recentHistory = gameModel.stack.slice(
@@ -90,7 +90,7 @@ class GNUGoClient {
         ),
         size: gameModel.size,
         color: gameModel.turn == 1 ? "b" : "w",
-        level: 1,
+        level: level,
       }
     );
     return response.data as string;
@@ -105,7 +105,6 @@ class GNUGoClient {
       moveList,
       size: gameModel.size,
     });
-    console.log(response);
     const { white, black, komi } = response.data;
     const whiteScore = (white.length +
       gameModel.position.capCount.white +
