@@ -70,8 +70,6 @@ class GNUGoClient {
         });
       }
     }
-    console.log(moves);
-    console.log("game mode turn " + gameModel.turn);
     const response = await GNUGoClient.GNUGoServerCall(
       `${gnugoHost}/getBestPosition`,
       {

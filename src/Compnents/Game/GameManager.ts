@@ -59,7 +59,7 @@ class GameManager {
       if (previousState[i] == 0 && previousState[i] !== currentState[i]) {
         differences.push({
           index: i,
-          color: currentState[i],
+          color: currentState[i] as -1 | 1,
         });
       }
     }
@@ -90,16 +90,6 @@ class GameManager {
       }
     }
     return killStreak;
-  }
-  static isGameOver(gameModel: GameModel) {
-    const lastTwoPositions = gameModel.stack.slice(
-      -Math.min(gameModel.stack.length, 2)
-    );
-    const gameOver =
-      lastTwoPositions.length == 2 &&
-      GameManager.getDifferences(lastTwoPositions[0], lastTwoPositions[1])
-        .length == 0;
-    return gameOver;
   }
 
   static GameModelFromPosition(position: WGo.Position): GameModel {
@@ -169,9 +159,9 @@ class GameManager {
     }
   }
 
-  play(row: number, col: number) {
+  play(row: number, col: number, color?: -1 | 1) {
     const turn = this.getModel().turn;
-    const result = this.gameInstance.play(row, col);
+    const result = this.gameInstance.play(row, col, color);
     if (Array.isArray(result)) {
       if (result.length > 0) {
         this.playSoundAfterCapture(
@@ -189,10 +179,12 @@ class GameManager {
     return this.gameInstance.isValid(row, col);
   }
   popPosition(): void {
-    console.log(this.gameInstance.stack.length);
     if (this.gameInstance.stack.length > 1) {
       this.gameInstance.popPosition();
     }
+  }
+  pushPosition(pos: WGo.Position) {
+    this.gameInstance.pushPosition(pos);
   }
 
   pass() {

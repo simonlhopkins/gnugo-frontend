@@ -170,11 +170,13 @@ const StyledBoard = styled.div<StyledBoardProps>`
       }
     }
     .piece {
-      animation: fadeIn 0.5s ease-out;
       position: absolute;
       font-size: 90cqw;
       pointer-events: none;
       z-index: 1;
+      &:not(.ghost) {
+        animation: fadeIn 0.5s ease-out;
+      }
       &.ghost {
         opacity: 0.5;
       }

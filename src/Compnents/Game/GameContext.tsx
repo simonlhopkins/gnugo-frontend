@@ -11,6 +11,7 @@ import GameManager, { GameModel } from "./GameManager";
 import useLocalStorage from "use-local-storage";
 import GNUGoClient from "./GNUGoClient";
 import { useSearchParams } from "react-router";
+import useWebRTCClient from "./WebRTCHooks";
 
 interface GameContextType {
   gameModel: GameModel | null;
@@ -37,13 +38,14 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
   children,
 }) => {
   const [gameModel, setGameModel] = useLocalStorage<GameModel | null>(
-    "gamestate",
+    "gameModel",
     null
   );
+  // const [gameModel, setGameModel] = useState<GameModel | null>(null);
+
   const [currentError, setCurrentError] = useState<number | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [loading, setLoading] = useState(false);
-  const initialLoad = useRef(true);
+
   // const [boardSize, setBoardSize] = useState(9);
   const boardSize = Number(searchParams.get("boardSize")) || 9;
 
@@ -78,14 +80,15 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
     };
   }, [gameModel]);
 
-  const addStone = async (x: number, y: number) => {
-    const playResult = gameManager.play(x, y);
+  const addStone = async (x: number, y: number, color?: -1 | 1) => {
+    const playResult = gameManager.play(x, y, color);
     if (!Array.isArray(playResult)) {
       alert(GameManager.GetErrorText(playResult));
       setCurrentError(playResult);
       return;
     }
     setCurrentError(null);
+
     setGameModel(gameManager.getModel());
   };
   const undo = () => {
@@ -102,6 +105,7 @@ export const GameContextProvider: React.FC<GameContextProviderProps> = ({
 
   const pass = () => {
     gameManager.pass();
+
     setGameModel(gameManager.getModel());
   };
 
